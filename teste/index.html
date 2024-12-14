@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>CEP</title>
+</head>
+
+<body>
+
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: sans-serif;
+            background-color: midnightblue;
+        }
+
+        .center {
+            width: 30%;
+            padding: 32px;
+            margin: 80PX auto;
+            text-align: center;
+            align-items: center;
+            border: 2px solid #f5bb0f;
+            border-radius: 8px;
+            background-color: midnightblue;
+            box-shadow: rgba(245, 187, 15, 0.56) 0px 22px 70px 4px;
+        }
+
+        h2 {
+            margin-bottom: 24px;
+            color: #f5bb0f;
+        }
+
+        p {
+            color: #f5bb0f;
+            margin: 32px 0;
+            font-size: 32px;
+        }
+
+        input {
+            border: 1px solid #987612;
+            outline: none;
+            padding: 8px;
+            border-radius: 8px;
+            font-size: 12px;
+            width: 50%;
+        }
+
+        button {
+            border: 1px solid #f5bb0f;
+            outline: none;
+            padding: 8px;
+            border-radius: 8px;
+            font-size: 12px;
+            width: 30%;
+            color: #f5bb0f;
+            background-color: midnightblue;
+            transition: 0.5s;
+        }
+
+        button:hover {
+            transition: 0.5s;
+            background-color: rgb(13, 13, 54);
+            transform: scale(1.02);
+            cursor: pointer;
+            color: #f5bb0f;
+        }
+    </style>
+
+    <div class="center">
+        <h2>Buscar CEP</h2>
+        <form id="cep-form">
+            <input type="text" id="cep-input" placeholder="Digite o CEP" maxlength="8">
+            <button type="submit">Buscar</button>
+        </form>
+        <div id="resultado"></div>
+    </div>
+
+
+    <script>const form = document.getElementById("cep-form");
+        const cepInput = document.getElementById("cep-input");
+        const resultado = document.getElementById("resultado");
+
+        form.addEventListener('submit', (event) => {
+            // lógica para buscar o cep
+
+            event.preventDefault(); // evitar recarregamento da pagina
+
+            const cep = cepInput.value.trim(); // trim -> remove white space
+
+            resultado.innerHTML = '<p>Buscando...</p>';
+
+            fetch(`https://viacep.com.br/ws/${cep}/json/`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error("Erro ao Buscar o CEP");
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.erro) {
+                        resultado.innerHTML = '<p style="color : red;">CEP nao encontrado</p>'
+                    }
+
+                    resultado.innerHTML = `
+                <p>CEP: ${data.cep}</p>
+                <p>Logradouro: ${data.logradouro}</p>
+                <p>Bairro: ${data.bairro}</p>
+                <p>Cidade: ${data.localidade}</p>
+                <p>Estado: ${data.estado}</p>
+            `
+                })
+        })
+    </script>
+
+</body>
+
+</html>
